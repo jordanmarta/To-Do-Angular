@@ -1,22 +1,90 @@
 import { Component } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Todo } from 'src/models/todo.models';
 
-// metadados para a classe
 @Component({
-	selector: 'app-root', // <app-root>
-	templateUrl: './app.component.html', // define o html do componente
-	// template: '<p>meu template</p>', // posso definir o html aqui dentro caso seja preciso
-	styleUrls: [ './app.component.css' ] // define o css do componente
+	selector: 'app-root',
+	templateUrl: './app.component.html', 
+	styleUrls: [ './app.component.css' ]
 })
-export class AppComponent {
-	public todos: any[] = [];
-	public title: String = 'Minhas tarefas';
 
-	/**
-   * ctor
-   */
-	constructor() {
-		this.todos.push('passear com o cachorro');
-		this.todos.push('ir ao supermercado');
-		this.todos.push('cortar o cabelo');
-	}
+export class AppComponent {
+  public mode = 'list';
+	public todos: Todo[] = [];
+  public title: String = 'Minhas tarefas';
+  public form: FormGroup;
+
+	constructor(private fb: FormBuilder) {
+
+    this.form = this.fb.group({
+      title: ['', Validators.compose([
+        Validators.minLength(3),
+        Validators.maxLength(60),
+        Validators.required
+      ])],
+      // id: ['', Validators.required]
+    });
+
+    this.load();
+  }
+
+  add() {
+    const title = this.form.controls['title'].value;
+    const id = this.todos.length + 1;
+    this.todos.push(new Todo(id, title, false));
+    this.save();
+    this.clear();
+  }
+  
+  clear() {
+    this.form.reset();
+  }
+
+  remove(todo: Todo) {
+    const index = this.todos.indexOf(todo);
+
+    if(index != -1) {
+      this.todos.splice(index, 1);
+    }
+
+    this.save();
+  }
+
+  markAsDone(todo: Todo) {
+    todo.done = true;
+    this.save();
+  }
+
+  markAsUndone(todo: Todo) {
+    todo.done = false;
+    this.save();
+  }
+
+  save() {
+    const data = JSON.stringify(this.todos);
+    localStorage.setItem('todos', data);
+    this.mode = 'list';
+  }
+
+  load() {
+    const data = localStorage.getItem('todos');
+    if(data){
+      this.todos = JSON.parse(data);
+    } else {
+      this.todos = [];
+    }
+  }
+
+  changeMode(mode:string) {
+    this.mode = mode;
+  }
 }
+
+
+// @Component = metadados para a classe
+// ** como funciona:
+// selector = setor da tag <app-root>
+// templateUrl = define o html do componente, pode ser também apenas definido como 'template' podendo 
+//               colocar assim o html aqui dentro. Ex: <p>meu template</p>'
+// styleUrls = define o css do componente
+// **

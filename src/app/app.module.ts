@@ -1,13 +1,25 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 
-//decorator (gera informações adicionais p classe)
+
 @NgModule({
-	declarations: [ AppComponent ], // componentes q terei no módulo
-	imports: [ BrowserModule ], // coisas extras q irei utilizar
-	providers: [], // tudo q vou prover para os componentes, como serviços, etc..
-	bootstrap: [ AppComponent ] //primeiro componente a ser iniciado
+	declarations: [ AppComponent ], 
+	imports: [ 
+		BrowserModule,
+		ReactiveFormsModule
+	], 
+	providers: [], 
+	bootstrap: [ AppComponent ] 
 })
 export class AppModule {}
+
+// @NgModule = decorator (gera informações adicionais p classe)
+// ** como funciona:
+// declarations = componentes q terei no módulo
+// imports = coisas extras q irei utilizar
+// providers = tudo q vou prover para os componentes, como serviços, etc..
+// bootstrap = primeiro componente a ser iniciado
+// **
